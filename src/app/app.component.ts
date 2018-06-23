@@ -7,7 +7,7 @@ import { GameLogicService } from './game-logic.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(public gls: GameLogicService) { }
+  constructor(public gls: GameLogicService) {}
 
   keyPress(key: string) {
     this.gls.keyPress(key);

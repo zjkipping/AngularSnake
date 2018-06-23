@@ -1,21 +1,3 @@
-export const FRUIT_SIZE: Dimensions = {
-  width: 15,
-  height: 15
-};
-
-export const SEGMENT_SIZE: Dimensions = {
-  width: 25,
-  height: 25
-};
-
-export const TILE_COUNT = 31;
-
-export const fruitSpawnRate = 2000;
-
-export const fruitSpawnCap = 5;
-
-export const playerMovementRate = 60;
-
 export enum Status {
   Loading,
   Loaded,
@@ -32,18 +14,12 @@ export interface Meta {
 }
 
 export interface Snake {
-  head: Segment;
   segments: Segment[];
+  turns: Segment[];
 }
 
 export interface Fruit {
   location: Location;
-}
-
-export enum SegmentType {
-  'HEAD',
-  'BODY',
-  'TURN'
 }
 
 export interface Location {
@@ -71,7 +47,6 @@ export enum Direction {
 }
 
 export interface Segment {
-  type: SegmentType;
   location: Location;
   direction: Direction;
 }

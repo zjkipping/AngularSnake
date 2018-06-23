@@ -1,8 +1,5 @@
-import { Situation, Dimensions, Fruit, Segment, Status, SegmentType } from './types';
-
-export function getRandomRange(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+import { Situation, Dimensions, Fruit, Segment, Status, Location } from './types';
+import { TILE_COUNT } from './utility';
 
 export function render(s: Situation) {
   s.gameCtx.clearRect(0, 0, s.screenDimensions.width, s.screenDimensions.height);
@@ -27,7 +24,7 @@ function drawRunningGame(s: Situation) {
 
 function drawPausedMenu(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number) {
   ctx.save();
-  ctx.font = `bold ${calculateFontSize(tileSize)}px Arial`;
+  ctx.font = `bold ${calculateFontSize(dimensions.width)}px Arial`;
   const message = 'Game Is Paused (press spacebar to resume)';
   ctx.textAlign = 'center';
   ctx.fillText(message, dimensions.width / 2, (dimensions.height / 2) * 0.8);
@@ -36,7 +33,7 @@ function drawPausedMenu(ctx: CanvasRenderingContext2D, dimensions: Dimensions, t
 
 function drawLoadingMessage(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number) {
   ctx.save();
-  ctx.font = `bold ${calculateFontSize(tileSize)}px Arial`;
+  ctx.font = `bold ${calculateFontSize(dimensions.width)}px Arial`;
   const message = 'Loading Game Assets';
   ctx.textAlign = 'center';
   ctx.fillText(message, dimensions.width / 2, (dimensions.height / 2) * 0.8);
@@ -45,7 +42,7 @@ function drawLoadingMessage(ctx: CanvasRenderingContext2D, dimensions: Dimension
 
 function drawStartUpMessage(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number) {
   ctx.save();
-  ctx.font = `bold ${calculateFontSize(tileSize)}px Arial`;
+  ctx.font = `bold ${calculateFontSize(dimensions.width)}px Arial`;
   const message = 'Press a direction (wasd) to start the game!';
   ctx.textAlign = 'center';
   ctx.fillText(message, dimensions.width / 2, (dimensions.height / 2) * 0.8);
@@ -54,12 +51,12 @@ function drawStartUpMessage(ctx: CanvasRenderingContext2D, dimensions: Dimension
 
 function drawEndGameScreen(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number, won: boolean) {
   ctx.save();
-  ctx.font = `bold ${calculateFontSize(tileSize)}px Arial`;
+  ctx.font = `bold ${calculateFontSize(dimensions.width)}px Arial`;
   let message;
   if (won) {
     message = 'You Won! Congratulations';
   } else {
-    message = 'You Lost... Try again next time';
+    message = 'You Lost... hit space to try again';
   }
   ctx.textAlign = 'center';
   ctx.fillText(message, dimensions.width / 2, (dimensions.height / 2) * 0.9);
@@ -80,33 +77,15 @@ function drawFruit(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSi
 }
 
 function drawSnake(s: Situation) {
-  drawHead(s.gameCtx, s.screenDimensions, s.tileSize, s.snake.head);
-  for (let x = 0; x < s.snake.segments.length; x++) {
-    if (s.snake.segments[x].type !== SegmentType.TURN) {
-      drawBodySegment(s.gameCtx, s.screenDimensions, s.tileSize, s.snake.segments[x]);
-    } else {
-      drawBodyTurn(s.gameCtx, s.screenDimensions, s.tileSize, s.snake.segments[x]);
-    }
+  for (let x = 1; x < s.snake.segments.length; x++) {
+    drawBodySegment(s.gameCtx, s.screenDimensions, s.tileSize, s.snake.segments[x], x === 0 ? '#008000' : '#006000');
   }
+  drawBodySegment(s.gameCtx, s.screenDimensions, s.tileSize, s.snake.segments[0], 0 === 0 ? '#008000' : '#006000');
 }
 
-function drawHead(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number, head: Segment) {
+function drawBodySegment(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number, segment: Segment, color) {
   ctx.save();
-  ctx.fillStyle = '#008000';
-  ctx.fillRect(head.location.x * tileSize, head.location.y * tileSize, tileSize, tileSize);
-  ctx.restore();
-}
-
-function drawBodySegment(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number, segment: Segment) {
-  ctx.save();
-  ctx.fillStyle = '#007000';
-  ctx.fillRect(segment.location.x * tileSize, segment.location.y * tileSize, tileSize, tileSize);
-  ctx.restore();
-}
-
-function drawBodyTurn(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number, segment: Segment) {
-  ctx.save();
-  ctx.fillStyle = '#ff0000';
+  ctx.fillStyle = color;
   ctx.fillRect(segment.location.x * tileSize, segment.location.y * tileSize, tileSize, tileSize);
   ctx.restore();
 }
@@ -118,13 +97,13 @@ function drawGUI(s: Situation) {
 function drawElapsedTime(ctx: CanvasRenderingContext2D, dimensions: Dimensions, tileSize: number, elapsedTime: number = 0) {
   ctx.save();
   const seconds = elapsedTime / 1000;
-  ctx.font = `bold ${calculateFontSize(tileSize * 0.7)}px Arial`;
+  ctx.font = `bold ${calculateFontSize(dimensions.width * 0.7)}px Arial`;
   const message = `Play Time: ${seconds}`;
   ctx.textAlign = 'left';
-  ctx.fillText(message, dimensions.width * 0.01, dimensions.height * 0.025);
+  ctx.fillText(message, dimensions.width * 0.01, dimensions.height * 0.03);
   ctx.restore();
 }
 
-function calculateFontSize(tileSize: number) {
-  return tileSize * 1.1;
+function calculateFontSize(width: number) {
+  return width * 0.04;
 }

@@ -1,12 +1,12 @@
 <app-game-screen
   (canvasLoaded)="loaded()"
   (keyPress)="keyPress($event)"
-  [snake]="gls.snake | async"
-  [fruits]="gls.fruits | async"
   [screenDimensions]="gls.screenDimensions | async"
   [status]="gls.status | async"
-  [tileSize]="gls.tileSize | async"
+  [snake]="gls.snake | async"
+  [fruits]="gls.fruits | async"
   [won]="gls.won | async"
+  [tileSize]="gls.tileSize | async"
   [elapsedTime]="gls.elapsedTime"
 >
 </app-game-screen>

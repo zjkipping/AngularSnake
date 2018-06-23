@@ -1,9 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild, Output, EventEmitter, Input, HostListener } from '@angular/core';
 
-import { Snake, Fruit, Meta, Dimensions, Status } from '../types';
+import { Snake, Fruit, Dimensions, Status } from '../types';
 import { render } from '../render';
 import { GameLogicService } from '../game-logic.service';
-import { InitializeAction } from '../app.state';
 
 @Component({
   selector: 'app-game-screen',
@@ -17,7 +16,7 @@ export class GameScreenComponent implements OnInit {
   private gameCanvas: HTMLCanvasElement;
   private drawPending = false;
   private _snake: Snake;
-  private _fruits: Fruit[];
+  private _fruits: Fruit[] = [];
   private _elapsedTime: number;
   private _screenDimensions: Dimensions;
   private _status: Status;
@@ -91,8 +90,8 @@ export class GameScreenComponent implements OnInit {
   ngOnInit() {
     this.gameCanvas = this.gameCanvasRef.nativeElement;
     this.gameCtx = this.gameCanvas.getContext('2d');
-
-    this.gls.initializeGame();
+    this.gameCanvas.focus();
+    this.canvasLoaded.emit();
   }
 
   private draw() {
